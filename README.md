@@ -1,4 +1,4 @@
-# Filtrado analogico y digital con MATLAB
+# Técnicas de filtrado con MATLAB
 Trabajos escolares de la asignatura Filtrado analógico y digital de la licenciatura en Ingeniería Biomédica cursada en la Universidad Autónoma Metropolitana.
 
 
