@@ -1,0 +1,474 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Pr&aacute;ctica 7. Dise&ntilde;o de filtros FIR por muestreo en la frecuencia</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-12-28"><meta name="DC.source" content="prac7jjgc.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Pr&aacute;ctica 7. Dise&ntilde;o de filtros FIR por muestreo en la frecuencia</h1><!--introduction--><p>Filtrado anal&oacute;gico y digital Juan Jos&eacute; Guzm&aacute;n Cruz</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Resumen</a></li><li><a href="#2">Objetivos</a></li><li><a href="#3">Ejercicio 1.</a></li><li><a href="#4">Ejercicio 2.</a></li><li><a href="#5">Ejercicio 3.</a></li><li><a href="#6">Ejercicio 4.</a></li><li><a href="#7">Ejercicio 5.</a></li><li><a href="#8">Ejercicio 6.</a></li><li><a href="#9">Ejercicio 7.</a></li><li><a href="#10">Discusi&oacute;n</a></li><li><a href="#11">Conclusiones</a></li></ul></div><h2 id="1">Resumen</h2><p>Se dise&ntilde;an filtros por el m&eacute;todo de muestreo en frecuencia comparando la forma pr&aacute;ctica y te&oacute;rica de implementarlos. Se dise&ntilde;an filtros por el mismo m&eacute;todo para filtrar una se&ntilde;al de oximetr&iacute;a de pulso y de presi&oacute;n.</p><h2 id="2">Objetivos</h2><p>1. Utilizar el m&eacute;todo de muestreo en la frecuencia para el dise&ntilde;o de filtros FIR. 2. Dise&ntilde;ar filtros digitales FIR para filtrar una se&ntilde;al de oximetr&iacute;a de pulso y presion.</p><h2 id="3">Ejercicio 1.</h2><p>Grafica la respuesta en frecuencia del filtro integrador para 101muestras y pendiente unitaria.</p><pre class="codeinput">clc
+clear <span class="string">all</span>
+
+w1 = -pi:.1:pi;
+h_jw = j*w1;
+
+N = 101;
+
+m = 1;
+<span class="keyword">for</span> m = 1:N
+    <span class="keyword">if</span> m &lt; 51
+        y(m) = (m-1);
+    <span class="keyword">else</span>
+        y(m) = (N-1)-(m-1);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+w = linspace(0,2*pi,N);
+
+figure (1)
+subplot <span class="string">211</span>, plot(w1,abs(h_jw))
+    title(<span class="string">'Respuesta en frecuencia H(jw)'</span>);
+subplot <span class="string">212</span>, stem(w,abs(y)), xlabel(<span class="string">'k'</span>), ylabel(<span class="string">'h[k]'</span>)
+    title(<span class="string">'Se&ntilde;al muestreada h[k] de 0 a 2*pi'</span>);
+</pre><img vspace="5" hspace="5" src="prac7jjgc_01.png" alt=""> <h2 id="4">Ejercicio 2.</h2><p>Ahora grafica h[n] a partir de los resultados te&oacute;ricos y de manera pr&aacute;ctica, mediante la transformada inversa de Fourier. Compara los resultados obtenidos.</p><pre class="codeinput">n=0;
+    <span class="keyword">for</span> k = 1:N
+        <span class="keyword">if</span> k &lt; 51
+            h(k) = 1/N*(k-1)*exp(j*2*pi*(k-1)*(n-1)/N);
+            n=n+1;
+        <span class="keyword">else</span>
+            h(k) = 1/N*((N-1)-(k-1))*exp(j*2*pi*(k-1)*(n-1)/N);
+            n=n+1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+n = 0:N-1;
+
+<span class="comment">% h[n] practica</span>
+y_transf = ifft(y);
+
+figure (2)
+subplot <span class="string">211</span>, plot(n,abs(y_transf)), xlabel(<span class="string">'n'</span>), ylabel(<span class="string">'h[n]'</span>)
+    title(<span class="string">'Respuesta al impulso h[n], pr&aacute;ctica'</span>);
+subplot <span class="string">212</span>, plot(n,abs(h)), xlabel(<span class="string">'n'</span>), ylabel(<span class="string">'h[n]'</span>)
+    title(<span class="string">'Respuesta al impulso h[n], te&oacute;rica'</span>);
+</pre><img vspace="5" hspace="5" src="prac7jjgc_02.png" alt=""> <h2 id="5">Ejercicio 3.</h2><p>Dise&ntilde;a un filtro pasa-bajas de fase lineal FIR, con 23 muestras, la respuesta ideal esta dada como un filtro pasa-banda con w0 = 0.3*pi. Asume una frecuencia de muestreo normalizada de acuerdo con la frecuencia de Nyquist w = pi.</p><pre class="codeinput">clc
+clear <span class="string">all</span>
+
+w0 = .3*pi;
+N = 23;
+m = N*w0/(2*pi);
+<span class="keyword">for</span> n = 1:N
+    <span class="keyword">if</span> n &lt; 2*m
+        h(n) = 1;
+    <span class="keyword">else</span>
+        h(n) = 0;
+    <span class="keyword">end</span>
+    n = n + 1;
+<span class="keyword">end</span>
+
+n = linspace(0,2*pi,N);
+figure (3)
+stem(n,h);
+</pre><img vspace="5" hspace="5" src="prac7jjgc_03.png" alt=""> <h2 id="6">Ejercicio 4.</h2><p>Grafica la magnitud y fase de la respuesta en frecuencia ideal, crea el vector de la respuesta de fase lineal, recuerda que j=sqrt(-1).</p><pre class="codeinput">w = 0.3*pi;
+N = 23;
+M = (N-1)/2;
+k=0:N-1;
+w=1:N;
+
+H(w) = exp(-j*2*pi*M*k/N);
+
+w = linspace(0,2*pi,N);
+
+figure (4)
+subplot <span class="string">211</span>, plot(w,real(H))
+subplot <span class="string">212</span>, plot(w,angle(H))
+</pre><img vspace="5" hspace="5" src="prac7jjgc_04.png" alt=""> <h2 id="7">Ejercicio 5.</h2><p>Crea el vector de la respuesta en frecuencia H considerando magnitud y fase. Posteriormente dise&ntilde;a el filtro utilizando la transformada inversa de Fourier. Obt&eacute;n la parte real de h[n] y graficala utilizando la funci&oacute;n stem.</p><pre class="codeinput">y = ifft(H.*h);
+
+figure(5)
+stem(w,real(y))
+</pre><img vspace="5" hspace="5" src="prac7jjgc_05.png" alt=""> <h2 id="8">Ejercicio 6.</h2><p>Prueba el filtro dise&ntilde;ado, obt&eacute;n la magnitud de la respuesta en frecuencia utilizando 512 muestras.</p><pre class="codeinput">N = 512;
+y1 = fft((real(y)),N);
+n = 0:N-1;
+
+figure(6)
+plot(n,abs(y1))
+</pre><img vspace="5" hspace="5" src="prac7jjgc_06.png" alt=""> <h2 id="9">Ejercicio 7.</h2><p>Ahora dise&ntilde;a un Filtro FIR por el m&eacute;todo de muestreo en la frecuencia, para las se&ntilde;ales de oxim&eacute;tria de pulso y presi&oacute;n, utiliza 5, 10 y 15 muestras en la frecuencia para el dise&ntilde;o de cada filtro. Posteriormente grafica la respuesta en frecuencia de cada filtro dise&ntilde;ado as&iacute; como su respuesta en frecuencia ideal.</p><pre class="codeinput">load(<span class="string">'datos'</span>)
+y=[1:10000];
+
+FM = 1000;
+NF = length(oximetria);
+oxi = fftshift(abs(fft(oximetria, NF)).^2);
+frec_oxi=(FM/NF)*(-NF/2:NF/2-1);
+
+NF2=length(pulso);
+F_pulso=fftshift(abs(fft(pulso, NF2)).^2);
+frec_pulso=(FM/NF2)*(-NF2/2:NF2/2-1);
+
+figure(7)
+subplot <span class="string">221</span>, plot(y,oximetria),title(<span class="string">'Se&ntilde;al OXIMETR&Iacute;A'</span>)
+subplot <span class="string">222</span>, plot(y,pulso),title(<span class="string">'Se&ntilde;al PRESI&Oacute;N'</span>)
+subplot <span class="string">223</span>, plot(frec_oxi,oxi), title(<span class="string">'Espectro de la se&ntilde;al de OXIMETR&Iacute;A'</span>)
+subplot <span class="string">224</span>, plot(frec_pulso,F_pulso), title(<span class="string">'Espectro de la se&ntilde;al de PRESI&Oacute;N'</span>)
+
+<span class="comment">% Para 5 muestras</span>
+N = 90;
+f = [0 0.03 0.03 0.06 1];
+m = [1 1 0 0 0];
+b = fir2(N,f,m);
+[h,w] = freqz(b,1,500);
+
+y1=filter(b,1,oximetria);
+y2=filter(b,1,pulso);
+
+<span class="comment">% Para 10 muestras</span>
+f2 = [0 0.015 0.0225 0.03 0.03 0.037 0.8 0.85 0.9 1];
+m2 = [1 1 1 1 0 0 0 0 0 0];
+b2 = fir2(N,f2,m2);
+[h2,w2] = freqz(b2,1,500);
+
+y3 = filter(b2,1,oximetria);
+y4 = filter(b2,1,pulso);
+
+<span class="comment">% Para 15 muestras</span>
+f3 = [0 0.015  0.0225 0.03 0.03 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+m3 = [1 1 1 1 0 0 0 0 0 0 0 0 0 0 0];
+b3 = fir2(N,f3,m3);
+[h3,w3] = freqz(b3,1,500);
+
+y5 = filter(b3,1,oximetria);
+y6 = filter(b3,1,pulso);
+
+figure(8)
+subplot <span class="string">331</span>, plot(f,m,w/pi,abs(h))
+subplot <span class="string">332</span>, plot(y1), title(<span class="string">'oximetr&iacute;a filtrada 5 muestras'</span>)
+subplot <span class="string">333</span>, plot(y2), title(<span class="string">'presi&oacute;n filtrada 5 muestras'</span>)
+
+subplot <span class="string">334</span>, plot(f2,m2,w2/pi,abs(h2))
+subplot <span class="string">335</span>, plot(y3), title(<span class="string">'oximetr&iacute;a filtrada 10 muestras'</span>)
+subplot <span class="string">336</span>, plot(y4), title(<span class="string">'presi&oacute;n filtrada 10 muestras'</span>)
+
+subplot <span class="string">337</span>, plot(f3,m3,w3/pi,abs(h3));
+subplot <span class="string">338</span>, plot(y,y5), title(<span class="string">'oximetr&iacute;a filtrada 15 muestras'</span>)
+subplot <span class="string">339</span>, plot(y,y6), title(<span class="string">'presi&oacute;n filtrada 15 muestras'</span>)
+</pre><img vspace="5" hspace="5" src="prac7jjgc_07.png" alt=""> <img vspace="5" hspace="5" src="prac7jjgc_08.png" alt=""> <h2 id="10">Discusi&oacute;n</h2><pre class="codeinput"><span class="comment">% Figura 1. Se observa la respuesta en frecuencia H(jw) del filtro</span>
+<span class="comment">% integrador de -pi a pi y el muestreo de dicha se&ntilde;al h[k] de 0 a 2*pi.</span>
+
+<span class="comment">% Figura 2. Respuesta al impulso de forma te&oacute;rica resolviendo la sumatoria</span>
+<span class="comment">% para obtener h[n] y pr&aacute;ctica utilizando el comando ifft.</span>
+
+<span class="comment">% Figura 3. Filtro pasa-bajas ideal con 23 muestras y fase lineal.</span>
+
+<span class="comment">% Figura 4. Magnitud y fase del filtro pasa-bajas ideal de 0 a 2*pi.</span>
+
+<span class="comment">% Figura 5. Respuesta al impulso de la respuesta en frecuencia utilizando</span>
+<span class="comment">% la transformada inversa de Fourier.</span>
+
+<span class="comment">% Figura 6. Magnitud de la respuesta en frecuencia del filtro pasa-bajas</span>
+<span class="comment">% utilizando 512 muestras</span>
+
+<span class="comment">% Figura 7. (sup izq) se&ntilde;al de oximetr&iacute;a, (sup der) se&ntilde;al de presi&oacute;n,</span>
+<span class="comment">% (inf izq) espectro de la se&ntilde;al de oximetr&iacute;a, (inf der) espectro de la</span>
+<span class="comment">% se&ntilde;al de presi&oacute;n.</span>
+
+<span class="comment">% Figura 8. Se&ntilde;ales de oximetr&iacute;a y presi&oacute;n filtradas con distintos valores</span>
+<span class="comment">% de muestras.</span>
+</pre><h2 id="11">Conclusiones</h2><pre class="codeinput"><span class="comment">% En la figura 2 se ve claramente que los gr&aacute;ficos son diferentes y</span>
+<span class="comment">% deberian ser iguales o muy parecidos, por lo tanto esta parte no la</span>
+<span class="comment">% considero correcta.</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Práctica 7. Diseño de filtros FIR por muestreo en la frecuencia 
+% Filtrado analógico y digital
+% Juan José Guzmán Cruz
+
+%% Resumen
+% Se diseñan filtros por el método de muestreo en frecuencia comparando la
+% forma práctica y teórica de implementarlos. Se diseñan filtros por el
+% mismo método para filtrar una señal de oximetría de pulso y de presión.
+
+%% Objetivos
+% 1. Utilizar el método de muestreo en la frecuencia para el diseño de
+% filtros FIR.
+% 2. Diseñar filtros digitales FIR para filtrar una señal de oximetría de
+% pulso y presion.
+
+%% Ejercicio 1.
+% Grafica la respuesta en frecuencia del filtro integrador
+% para 101muestras y pendiente unitaria.
+
+clc
+clear all
+
+w1 = -pi:.1:pi;
+h_jw = j*w1;
+
+N = 101;
+
+m = 1;
+for m = 1:N
+    if m < 51
+        y(m) = (m-1);
+    else
+        y(m) = (N-1)-(m-1);
+    end
+end
+
+w = linspace(0,2*pi,N);
+
+figure (1)
+subplot 211, plot(w1,abs(h_jw))
+    title('Respuesta en frecuencia H(jw)');
+subplot 212, stem(w,abs(y)), xlabel('k'), ylabel('h[k]')
+    title('Señal muestreada h[k] de 0 a 2*pi');
+
+%% Ejercicio 2.
+% Ahora grafica h[n] a partir de los resultados teóricos y de manera
+% práctica, mediante la transformada inversa de Fourier. Compara los
+% resultados obtenidos.
+
+n=0;
+    for k = 1:N
+        if k < 51
+            h(k) = 1/N*(k-1)*exp(j*2*pi*(k-1)*(n-1)/N);
+            n=n+1;
+        else
+            h(k) = 1/N*((N-1)-(k-1))*exp(j*2*pi*(k-1)*(n-1)/N);
+            n=n+1;
+        end
+    end
+
+n = 0:N-1;
+
+% h[n] practica
+y_transf = ifft(y);
+
+figure (2)
+subplot 211, plot(n,abs(y_transf)), xlabel('n'), ylabel('h[n]')
+    title('Respuesta al impulso h[n], práctica');
+subplot 212, plot(n,abs(h)), xlabel('n'), ylabel('h[n]')
+    title('Respuesta al impulso h[n], teórica');
+
+%% Ejercicio 3.
+% Diseña un filtro pasa-bajas de fase lineal FIR, con 23 muestras, la
+% respuesta ideal esta dada como un filtro pasa-banda con w0 = 0.3*pi. Asume
+% una frecuencia de muestreo normalizada de acuerdo con la frecuencia de
+% Nyquist w = pi.
+
+clc
+clear all
+
+w0 = .3*pi;
+N = 23;
+m = N*w0/(2*pi);
+for n = 1:N
+    if n < 2*m
+        h(n) = 1;
+    else
+        h(n) = 0;
+    end
+    n = n + 1;
+end
+
+n = linspace(0,2*pi,N);
+figure (3)
+stem(n,h);
+
+%% Ejercicio 4.
+% Grafica la magnitud y fase de la respuesta en frecuencia ideal, crea
+% el vector de la respuesta de fase lineal, recuerda que j=sqrt(-1).
+
+w = 0.3*pi;
+N = 23;
+M = (N-1)/2;
+k=0:N-1;
+w=1:N;
+
+H(w) = exp(-j*2*pi*M*k/N);
+
+w = linspace(0,2*pi,N);
+
+figure (4)
+subplot 211, plot(w,real(H))
+subplot 212, plot(w,angle(H))
+
+%% Ejercicio 5.
+% Crea el vector de la respuesta en frecuencia H considerando magnitud y
+% fase. Posteriormente diseña el filtro utilizando la transformada inversa
+% de Fourier. Obtén la parte real de h[n] y graficala utilizando la función
+% stem.
+
+y = ifft(H.*h);
+
+figure(5)
+stem(w,real(y))
+
+%% Ejercicio 6.
+% Prueba el filtro diseñado, obtén la magnitud de la respuesta en
+% frecuencia utilizando 512 muestras.
+
+N = 512;
+y1 = fft((real(y)),N);
+n = 0:N-1;
+
+figure(6)
+plot(n,abs(y1))
+
+%% Ejercicio 7.
+% Ahora diseña un Filtro FIR por el método de muestreo en la
+% frecuencia, para las señales de oximétria de pulso y presión, utiliza 5,
+% 10 y 15 muestras en la frecuencia para el diseño de cada filtro.
+% Posteriormente grafica la respuesta en frecuencia de cada filtro diseñado
+% así como su respuesta en frecuencia ideal.
+
+load('datos')
+y=[1:10000];
+
+FM = 1000;
+NF = length(oximetria);
+oxi = fftshift(abs(fft(oximetria, NF)).^2);
+frec_oxi=(FM/NF)*(-NF/2:NF/2-1);
+
+NF2=length(pulso);
+F_pulso=fftshift(abs(fft(pulso, NF2)).^2);
+frec_pulso=(FM/NF2)*(-NF2/2:NF2/2-1);
+
+figure(7)
+subplot 221, plot(y,oximetria),title('Señal OXIMETRÍA')
+subplot 222, plot(y,pulso),title('Señal PRESIÓN')
+subplot 223, plot(frec_oxi,oxi), title('Espectro de la señal de OXIMETRÍA')
+subplot 224, plot(frec_pulso,F_pulso), title('Espectro de la señal de PRESIÓN')
+
+% Para 5 muestras
+N = 90;
+f = [0 0.03 0.03 0.06 1];
+m = [1 1 0 0 0];
+b = fir2(N,f,m);
+[h,w] = freqz(b,1,500);
+
+y1=filter(b,1,oximetria);
+y2=filter(b,1,pulso);
+
+% Para 10 muestras
+f2 = [0 0.015 0.0225 0.03 0.03 0.037 0.8 0.85 0.9 1];
+m2 = [1 1 1 1 0 0 0 0 0 0];
+b2 = fir2(N,f2,m2);
+[h2,w2] = freqz(b2,1,500);
+
+y3 = filter(b2,1,oximetria);
+y4 = filter(b2,1,pulso);
+
+% Para 15 muestras
+f3 = [0 0.015  0.0225 0.03 0.03 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+m3 = [1 1 1 1 0 0 0 0 0 0 0 0 0 0 0];
+b3 = fir2(N,f3,m3);
+[h3,w3] = freqz(b3,1,500);
+
+y5 = filter(b3,1,oximetria);
+y6 = filter(b3,1,pulso);
+
+figure(8)
+subplot 331, plot(f,m,w/pi,abs(h))
+subplot 332, plot(y1), title('oximetría filtrada 5 muestras')
+subplot 333, plot(y2), title('presión filtrada 5 muestras')
+
+subplot 334, plot(f2,m2,w2/pi,abs(h2))
+subplot 335, plot(y3), title('oximetría filtrada 10 muestras')
+subplot 336, plot(y4), title('presión filtrada 10 muestras')
+
+subplot 337, plot(f3,m3,w3/pi,abs(h3));
+subplot 338, plot(y,y5), title('oximetría filtrada 15 muestras')
+subplot 339, plot(y,y6), title('presión filtrada 15 muestras')
+
+%% Discusión
+
+% Figura 1. Se observa la respuesta en frecuencia H(jw) del filtro
+% integrador de -pi a pi y el muestreo de dicha señal h[k] de 0 a 2*pi.
+
+% Figura 2. Respuesta al impulso de forma teórica resolviendo la sumatoria 
+% para obtener h[n] y práctica utilizando el comando ifft.
+
+% Figura 3. Filtro pasa-bajas ideal con 23 muestras y fase lineal.
+
+% Figura 4. Magnitud y fase del filtro pasa-bajas ideal de 0 a 2*pi.
+
+% Figura 5. Respuesta al impulso de la respuesta en frecuencia utilizando
+% la transformada inversa de Fourier.
+
+% Figura 6. Magnitud de la respuesta en frecuencia del filtro pasa-bajas
+% utilizando 512 muestras
+
+% Figura 7. (sup izq) señal de oximetría, (sup der) señal de presión,
+% (inf izq) espectro de la señal de oximetría, (inf der) espectro de la
+% señal de presión.
+
+% Figura 8. Señales de oximetría y presión filtradas con distintos valores
+% de muestras.
+
+%% Conclusiones
+
+% En la figura 2 se ve claramente que los gráficos son diferentes y
+% deberian ser iguales o muy parecidos, por lo tanto esta parte no la
+% considero correcta.
+ 
+##### SOURCE END #####
+--></body></html>
